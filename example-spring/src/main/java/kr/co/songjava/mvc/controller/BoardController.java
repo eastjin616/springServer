@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.co.songjava.configuration.exception.BaseException;
 import kr.co.songjava.configuration.http.BaseResponse;
+import kr.co.songjava.configuration.http.BaseResponseCode;
 import kr.co.songjava.mvc.domain.Board;
 import kr.co.songjava.mvc.parameter.BoardParameter;
 import kr.co.songjava.mvc.repository.BoardRepository;
@@ -56,7 +59,12 @@ public class BoardController {
 	    @Parameter(name = "boardSeq", description = "게시물 번호", example = "1"),
 	})
 	public BaseResponse<Board> get(@PathVariable int boardSeq) {
-		return new BaseResponse<Board>(boardService.get(boardSeq));
+		Board board = boardService.get(boardSeq);
+		//null처리
+		if(board == null) {
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] { "게시물" });
+		}
+		return new BaseResponse<Board>(board);
 	}
 	
 	/**
@@ -71,6 +79,15 @@ public class BoardController {
 	    @Parameter(name = "contents", description = "내용", example = "spring 강좌"),
 	})
 	public BaseResponse<Integer> save(BoardParameter parameter) {
+		// 제목 필수 체크
+		if (!StringUtils.hasText(parameter.getTitle())) {
+		    throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[]{"title", "제목"});
+		}
+
+		// 내용 필수 체크
+		if (!StringUtils.hasText(parameter.getContents())) {
+			throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[] { "contents", "내용" });
+		}
 		boardService.save(parameter);
 		return new BaseResponse<Integer>(parameter.getBoardSeq());
 	}
