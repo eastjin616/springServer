@@ -21,10 +21,10 @@
 			B.CONTENTS,
 			B.REG_DATE
 		  FROM T_BOARD B
-		  WHERE B.BOARD_SEQ = ${boardSeq}
+		  WHERE B.BOARD_SEQ = #{boardSeq}
 	</select>
 	
-	<insert id="save" parameterType="kr.co.songjava.mvc.domain.Board">
+	<insert id="save" parameterType="kr.co.songjava.mvc.parameter.BoardParameter" useGeneratedKeys="true" keyProperty="boardSeq">
 		INSERT INTO T_BOARD
 		(
 			TITLE,
@@ -39,7 +39,7 @@
 		)
 	</insert>
 	
-	<update id="update" parameterType="kr.co.songjava.mvc.domain.Board">
+	<update id="update" parameterType="kr.co.songjava.mvc.parameter.BoardParameter">
 		UPDATE T_BOARD
 		   SET
 			TITLE = #{title},

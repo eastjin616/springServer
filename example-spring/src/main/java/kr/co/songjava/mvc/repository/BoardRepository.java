@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import kr.co.songjava.mvc.domain.Board;
+import kr.co.songjava.mvc.parameter.BoardParameter;
 
 /**
  * 게시판 Repository
@@ -17,9 +18,9 @@ public interface BoardRepository {
 	
 	Board get(int boardSeq); //단건
 	
-	void save(Board board); //등록
+	void save(BoardParameter board); //등록
 	
-	void update(Board board); //업데이트
+	void update(BoardParameter board); //업데이트
 	
 	void delete(int boardSeq); //삭제
 }
